@@ -8,6 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TarefaService {
 
@@ -25,5 +27,10 @@ public class TarefaService {
         var tarefaModel = new TarefaModel();
         BeanUtils.copyProperties(tarefaRecordDTO, tarefaModel);
         return tarefaModel;
+    }
+
+    public List<TarefaModel> buscarTarefas()
+    {
+        return repository.findAll();
     }
 }

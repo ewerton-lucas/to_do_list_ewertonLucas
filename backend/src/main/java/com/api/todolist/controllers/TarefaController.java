@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/todolist/tarefas")
 @CrossOrigin(origins = "*")
@@ -20,6 +22,11 @@ public class TarefaController {
     public ResponseEntity<TarefaModel> criarTarefa(@RequestBody @Valid TarefaRecordDTO tarefaRecordDTO)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criarTarefa(tarefaRecordDTO));
+    }
+    @GetMapping
+    public ResponseEntity<List<TarefaModel>> buscarTarefas()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefas());
     }
 
 }
