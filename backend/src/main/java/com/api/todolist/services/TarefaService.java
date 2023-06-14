@@ -65,5 +65,16 @@ public class TarefaService {
         tarefaModelRecuperada.get().setStatus(tarefaAtualizadaConvertida.getStatus());
         return tarefaModelRecuperada.get();
     }
+    @Transactional
+    public Object deletarTarefa(UUID id)
+    {
+        var tarefaRecuperada = repository.findById(id);
+        if (tarefaRecuperada.isEmpty())
+        {
+            throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
+        }
+        repository.delete(tarefaRecuperada.get());
+        return "Tarefa deletada com sucesso.";
+    }
 
 }

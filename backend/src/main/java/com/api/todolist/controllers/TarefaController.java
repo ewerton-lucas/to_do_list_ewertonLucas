@@ -45,5 +45,10 @@ public class TarefaController {
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizarTarefa(id, tarefaRecordDTO));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletarTarefa(@PathVariable(value = "id") UUID id)
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(service.deletarTarefa(id));
+    }
 
 }
