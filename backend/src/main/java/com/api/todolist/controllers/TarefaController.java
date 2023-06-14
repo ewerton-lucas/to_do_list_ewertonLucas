@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequestMapping("/v1/todolist/tarefas")
 @CrossOrigin(origins = "*")
 public class TarefaController {
+
     @Autowired
     private TarefaService service;
 
@@ -24,27 +25,32 @@ public class TarefaController {
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criarTarefa(tarefaRecordDTO));
     }
+
     @GetMapping
     public ResponseEntity<List<TarefaModel>> buscarTarefas()
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefas());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> buscarTarefaPorId(@PathVariable(value = "id") UUID id)
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefaPorId(id));
     }
+
     @GetMapping(params = "status")
     public ResponseEntity<List<TarefaModel>> buscarTarefasPorStatus(@RequestParam(name = "status") String status)
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefasPorStatus(status));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Object> atualizarTarefa(@PathVariable(value = "id") UUID id,
                                                   @RequestBody @Valid TarefaRecordDTO tarefaRecordDTO)
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizarTarefa(id, tarefaRecordDTO));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletarTarefa(@PathVariable(value = "id") UUID id)
     {

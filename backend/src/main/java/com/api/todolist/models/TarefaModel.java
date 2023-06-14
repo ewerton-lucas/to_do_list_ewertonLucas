@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TarefaModel implements Serializable {
+public class TarefaModel extends RepresentationModel<TarefaModel> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

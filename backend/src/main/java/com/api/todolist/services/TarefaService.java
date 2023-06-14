@@ -1,5 +1,6 @@
 package com.api.todolist.services;
 
+import com.api.todolist.controllers.TarefaController;
 import com.api.todolist.dtos.TarefaRecordDTO;
 import com.api.todolist.exceptions.TarefaNaoEncontradaException;
 import com.api.todolist.models.TarefaModel;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class TarefaService {
@@ -33,17 +37,30 @@ public class TarefaService {
 
     public List<TarefaModel> buscarTarefas()
     {
-        return repository.findAll();
+        var tarefas = repository.findAll();
+        if (!tarefas.isEmpty())
+        {
+            for (TarefaModel tarefa : tarefas)
+            {
+                tarefa.add(linkTo(methodOn(TarefaController.class)
+                        .buscarTarefaPorId(tarefa.getId()))
+                        .withSelfRel());
+            }
+        }
+        return tarefas;
     }
 
     public TarefaModel buscarTarefaPorId(UUID id)
     {
-        var tarefaModelRecuperada = repository.findById(id);
-        if (tarefaModelRecuperada.isEmpty())
+        var tarefa = repository.findById(id);
+        if (tarefa.isEmpty())
         {
             throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
         }
-        return tarefaModelRecuperada.get();
+        tarefa.get().add(linkTo(methodOn(TarefaController.class)
+                .buscarTarefas())
+                .withRel("Lista de Tarefas"));
+        return tarefa.get();
     }
 
     public List<TarefaModel> buscarTarefasPorStatus(String status)
@@ -65,6 +82,7 @@ public class TarefaService {
         tarefaModelRecuperada.get().setStatus(tarefaAtualizadaConvertida.getStatus());
         return tarefaModelRecuperada.get();
     }
+
     @Transactional
     public Object deletarTarefa(UUID id)
     {
