@@ -34,5 +34,10 @@ public class TarefaController {
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefaPorId(id));
     }
+    @GetMapping(params = "status")
+    public ResponseEntity<List<TarefaModel>> buscarTarefasPorStatus(@RequestParam(name = "status") String status)
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefasPorStatus(status));
+    }
 
 }

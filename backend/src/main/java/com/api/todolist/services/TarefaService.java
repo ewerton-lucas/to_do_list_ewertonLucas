@@ -24,7 +24,7 @@ public class TarefaService {
         return repository.save(converterTarefaRecordDtoParaTarefaModel(tarefaRecordDTO));
     }
 
-    private TarefaModel converterTarefaRecordDtoParaTarefaModel(TarefaRecordDTO tarefaRecordDTO)
+    public TarefaModel converterTarefaRecordDtoParaTarefaModel(TarefaRecordDTO tarefaRecordDTO)
     {
         var tarefaModel = new TarefaModel();
         BeanUtils.copyProperties(tarefaRecordDTO, tarefaModel);
@@ -45,4 +45,10 @@ public class TarefaService {
         }
         return tarefaModelRecuperada.get();
     }
+
+    public List<TarefaModel> buscarTarefasPorStatus(String status)
+    {
+        return repository.findByStatus(status);
+    }
+
 }
