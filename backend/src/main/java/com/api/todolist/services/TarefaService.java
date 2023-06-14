@@ -51,4 +51,19 @@ public class TarefaService {
         return repository.findByStatus(status);
     }
 
+    @Transactional
+    public TarefaModel atualizarTarefa(UUID id, TarefaRecordDTO tarefaRecordDTO)
+    {
+        var tarefaModelRecuperada = repository.findById(id);
+        if (tarefaModelRecuperada.isEmpty())
+        {
+            throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
+        }
+        var tarefaAtualizadaConvertida = converterTarefaRecordDtoParaTarefaModel(tarefaRecordDTO);
+        tarefaModelRecuperada.get().setTitulo(tarefaAtualizadaConvertida.getTitulo());
+        tarefaModelRecuperada.get().setDescricao(tarefaAtualizadaConvertida.getDescricao());
+        tarefaModelRecuperada.get().setStatus(tarefaAtualizadaConvertida.getStatus());
+        return tarefaModelRecuperada.get();
+    }
+
 }

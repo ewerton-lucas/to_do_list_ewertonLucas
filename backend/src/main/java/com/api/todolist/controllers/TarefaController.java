@@ -39,5 +39,11 @@ public class TarefaController {
     {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarTarefasPorStatus(status));
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> atualizarTarefa(@PathVariable(value = "id") UUID id,
+                                                  @RequestBody @Valid TarefaRecordDTO tarefaRecordDTO)
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(service.atualizarTarefa(id, tarefaRecordDTO));
+    }
 
 }
