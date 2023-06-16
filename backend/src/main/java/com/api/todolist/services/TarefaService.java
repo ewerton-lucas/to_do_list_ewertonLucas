@@ -28,13 +28,6 @@ public class TarefaService {
         return repository.save(converterTarefaRecordDtoParaTarefaModel(tarefaRecordDTO));
     }
 
-    public TarefaModel converterTarefaRecordDtoParaTarefaModel(TarefaRecordDTO tarefaRecordDTO)
-    {
-        var tarefaModel = new TarefaModel();
-        BeanUtils.copyProperties(tarefaRecordDTO, tarefaModel);
-        return tarefaModel;
-    }
-
     public List<TarefaModel> buscarTarefas()
     {
         var tarefas = repository.findAll();
@@ -42,9 +35,7 @@ public class TarefaService {
         {
             for (TarefaModel tarefa : tarefas)
             {
-                tarefa.add(linkTo(methodOn(TarefaController.class)
-                        .buscarTarefaPorId(tarefa.getId()))
-                        .withSelfRel());
+                adicionarLinkParaRecuperarTarefaPorId(tarefa);
             }
         }
         return tarefas;
@@ -57,15 +48,22 @@ public class TarefaService {
         {
             throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
         }
-        tarefa.get().add(linkTo(methodOn(TarefaController.class)
-                .buscarTarefas())
-                .withRel("Lista de Tarefas"));
+        adicionarLinkParaRecuperarListaDeTarefas(tarefa.get());
         return tarefa.get();
     }
 
     public List<TarefaModel> buscarTarefasPorStatus(String status)
     {
-        return repository.findByStatus(status);
+        var tarefas = repository.findByStatus(status);
+        if (!tarefas.isEmpty())
+        {
+            for (TarefaModel tarefa : tarefas)
+            {
+                adicionarLinkParaRecuperarTarefaPorId(tarefa);
+                adicionarLinkParaRecuperarListaDeTarefas(tarefa);
+            }
+        }
+        return tarefas;
     }
 
     @Transactional
@@ -80,6 +78,7 @@ public class TarefaService {
         tarefaModelRecuperada.get().setTitulo(tarefaAtualizadaConvertida.getTitulo());
         tarefaModelRecuperada.get().setDescricao(tarefaAtualizadaConvertida.getDescricao());
         tarefaModelRecuperada.get().setStatus(tarefaAtualizadaConvertida.getStatus());
+        adicionarLinkParaRecuperarListaDeTarefas(tarefaModelRecuperada.get());
         return tarefaModelRecuperada.get();
     }
 
@@ -93,6 +92,27 @@ public class TarefaService {
         }
         repository.delete(tarefaRecuperada.get());
         return "Tarefa deletada com sucesso.";
+    }
+
+    public TarefaModel converterTarefaRecordDtoParaTarefaModel(TarefaRecordDTO tarefaRecordDTO)
+    {
+        var tarefaModel = new TarefaModel();
+        BeanUtils.copyProperties(tarefaRecordDTO, tarefaModel);
+        return tarefaModel;
+    }
+
+    public void adicionarLinkParaRecuperarTarefaPorId(TarefaModel tarefa)
+    {
+            tarefa.add(linkTo(methodOn(TarefaController.class)
+                    .buscarTarefaPorId(tarefa.getId()))
+                    .withSelfRel());
+    }
+
+    public void adicionarLinkParaRecuperarListaDeTarefas(TarefaModel tarefa)
+    {
+        tarefa.add(linkTo(methodOn(TarefaController.class)
+                .buscarTarefas())
+                .withRel("Lista de Tarefas"));
     }
 
 }
